@@ -24,7 +24,7 @@ FRAMES_PER_SECOND = 30
 pygame.init()
 window = pygame.display.set_mode([WINDOW_WIDTH, WINDOW_HEIGHT])
 clock = pygame.time.Clock()
- 
+
 # 4 - Load assets: image(s), sounds,  etc.
 
 # 5 - Initialize variables
@@ -33,10 +33,16 @@ title = pygwidgets.DisplayText(window, (0, 40),
                 fontSize=36, width=WINDOW_WIDTH, justified='center')
 
 inputCaption = pygwidgets.DisplayText(window, (20, 150),
-                'Input money amount:', fontSize=24,
+                'Input money amount (dollor):', fontSize=24,
                 width=190, justified='right')
 inputField = InputNumber(window, (230, 150), '', width=150, initialFocus=True)
-okButton = pygwidgets.TextButton(window, (430, 150), 'OK')
+
+inputCaption_euro = pygwidgets.DisplayText(window, (20, 200),
+                'Input money amount (euro):', fontSize=24,
+                width=190, justified='right')
+inputField_euro = InputNumber(window, (230, 200), '', width=150)
+
+okButton = pygwidgets.TextButton(window, (430, 200), 'OK')
 
 outputCaption1 = pygwidgets.DisplayText(window, (20, 300),
                 'Output dollars & cents:', fontSize=24,
@@ -44,12 +50,26 @@ outputCaption1 = pygwidgets.DisplayText(window, (20, 300),
 moneyField1 = DisplayMoney(window, (230, 300), '', textColor=BLACK,
                 backgroundColor=WHITE, width=150)
 
-outputCaption2 = pygwidgets.DisplayText(window, (20, 400),
+outputCaption2 = pygwidgets.DisplayText(window, (20, 350),
+                'Output euro & cents:', fontSize=24,
+                width=190, justified='right')
+moneyField2 = DisplayMoney(window, (230, 350), '', textColor=BLACK,
+                backgroundColor=WHITE, width=150)
+
+outputCaption3 = pygwidgets.DisplayText(window, (20, 400),
                 'Output dollars only:', fontSize=24,
                 width=190, justified='right')
-moneyField2 = DisplayMoney(window, (230, 400), '', textColor=BLACK,
+moneyField3 = DisplayMoney(window, (230, 400), '', textColor=BLACK,
                 backgroundColor=WHITE, width=150,
                 showCents=False)
+
+outputCaption4 = pygwidgets.DisplayText(window, (20, 450),
+                'Output euro only:', fontSize=24,
+                width=190, justified='right')
+moneyField4 = DisplayMoney(window, (230, 450), '', textColor=BLACK,
+                backgroundColor=WHITE, width=150,
+                showCents=False)
+
 # 6 - Loop forever
 while True:
 
@@ -61,15 +81,18 @@ while True:
             sys.exit()
 
         # Pressing Return/Enter or clicking OK triggers action
-        if inputField.handleEvent(event) or okButton.handleEvent(event):
+        if inputField.handleEvent(event) or inputField_euro.handleEvent(event) or okButton.handleEvent(event):
             try:
-                theValue = inputField.getValue()
+                dollar_value = inputField.getValue()
+                euro_value = inputField_euro.getValue()
             except ValueError:  # any remaining error
                 inputField.setValue('(not a number)')
+                inputField_euro.setValue('(not a number)')
             else:  # input was OK
-                theText = str(theValue)
-                moneyField1.setValue(theText)
-                moneyField2.setValue(theText)
+                moneyField1.setValue(str(dollar_value))
+                moneyField2.setValue(str(euro_value))
+                moneyField3.setValue(str(dollar_value))
+                moneyField4.setValue(str(euro_value))
 
     # 8  Do any "per frame" actions
 
@@ -80,11 +103,23 @@ while True:
     title.draw()
     inputCaption.draw()
     inputField.draw()
+    inputCaption_euro.draw()
+    inputField_euro.draw()
     okButton.draw()
     outputCaption1.draw()
     moneyField1.draw()
     outputCaption2.draw()
     moneyField2.draw()
+    outputCaption3.draw()
+    moneyField3.draw()
+    outputCaption4.draw()
+    moneyField4.draw()
+
+    # 11 - Update the window
+    pygame.display.update()
+
+    # 12 - Slow things down a bit
+    clock.tick(FRAMES_PER_SECOND)  # make pygame wait
 
     # 11 - Update the window
     pygame.display.update()
